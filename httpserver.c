@@ -10,7 +10,7 @@
 #include <string.h>
 #include <arpa/inet.h>
 
-#define PORT 8371 //1738 backwards
+#define PORT 8080 //1738 backwards
 #define BUFFER_SIZE 1024
 
 
@@ -50,15 +50,15 @@ int main() {
     printf("server listening");
 
     for (;;) {
-        int newsock = accept(sock, (struct sockaddr *)&host_addr, (socklen_t *)&host_addrlen);
+        int newsock = accept(sock, (struct sockaddr *)&client_addr, (socklen_t *)&client_addrlen);
         if (newsock < 0) {
             perror("webserver accept");
         }
-        printf("server accept");
+        printf("server accept\n");
 
         int valread = read(newsock, buffer, BUFFER_SIZE);
         if (valread < 0) {
-            perror("server read");
+            perror("server read\n");
             continue;
         }
         
