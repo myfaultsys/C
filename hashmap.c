@@ -81,7 +81,7 @@ person *hash_table_delete(char *name) {
         int try = (i + index) % TABLE_SIZE;
         if (hash_table[try] == NULL) return NULL;
         if (hash_table[try] == DELETED_NODE) continue;
-        if (hash_table[try] != NULL && strncmp(hash_table[try]->name, name, TABLE_SIZE) == 0) {
+        if (hash_table[try] != NULL && strncmp(hash_table[try]->name, name, MAX_NAME) == 0) {
             person *tmp = hash_table[try];
             hash_table[try] = (person *)(0xFFFFFFFFFFFFFFFFUL);
             return tmp;
