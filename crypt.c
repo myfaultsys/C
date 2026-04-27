@@ -1,60 +1,42 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
-typedef enum { ENCRYPT, DECRYPT } mode;
-
-void decrypt_string(char* string) {
-	char buffer[4096];
-	size_t length = strlen(string);
-	for (unsigned i = 0; i < length; i++) {
-		*(buffer + i) = *(string + i);
-	}
-	for (unsigned i = 0; i < length;  i++) {
-		*(buffer + i) = ( ( *(buffer + i)) + 1 ) + '0';
-	}
-	buffer[length] = '\0';
-	printf("The decrypted string is: %s\n", buffer);
-};
-
-void discombobulate(char* buffer, size_t length) {
-	for (unsigned i = 0; i < length; i++) {
-		*(buffer + i) = ( ( *(buffer + i)) - '0' ) - 1;
-	}
+void decrypt_string(char* input) {
+    if (!input) return;
+    char buffer[4096];
+    size_t len = strlen(input);
+    for (size_t i = 0; i < len; i++) {
+        buffer[i] = (input[i] + 1) + '0'; // Combined copy and math
+    }
+    buffer[len] = '\0';
+    printf("Decrypted: %s\n", buffer);
 }
 
-void encrypt_string(char* string) {	
-	char buffer[4096];
-	size_t length = strlen(string);
-	for (unsigned i = 0; i < length; i++) {
-		buffer[i] = *(string++);
-	}
-	buffer[length] = '\0';
-	discombobulate(buffer, length);
-	printf("Encrypted string is: %s\n", buffer);
-};
+void encrypt_string(char* input) {
+    if (!input) return;
+    char buffer[4096];
+    size_t len = strlen(input);
+    for (size_t i = 0; i < len; i++) {
+        buffer[i] = (input[i] - '0') - 1;
+    }
+    buffer[len] = '\0';
+    printf("Encrypted: %s\n", buffer);
+}
 
 int main(int argc, char** argv) {
-	
-	mode program_mode = ENCRYPT;
-	
-	int arg_indexes[argc];
-	memset(arg_indexes, 0, argc);
+    if (argc < 2) return 1;
 
-	for (unsigned i = 1; i < argc; i++) {
-		if (!strcmp(argv[i], "-d")) {
-			arg_indexes[i] = 1;
-			program_mode = DECRYPT;
-		}
-	}
+    // Search for the flag anywhere in the arguments
+    int decrypt_mode = 0;
+    char* target_string = NULL;
 
-	switch (program_mode) {
-		case ENCRYPT:
-			encrypt_string(argv[1]);
-			break;
-		case DECRYPT:
-			decrypt_string(argv[2]);
-	}
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-d") == 0) decrypt_mode = 1;
+        else target_string = argv[i]; // The argument that isn't "-d" is our string
+    }
 
-	return 0;
+    if (decrypt_mode && target_string) decrypt_string(target_string);
+    else if (target_string) encrypt_string(target_string);
+
+    return 0;
 }
